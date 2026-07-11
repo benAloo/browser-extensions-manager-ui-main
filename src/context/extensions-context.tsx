@@ -1,9 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from "react"
 import type { Extension, ExtensionFilter } from "@/types/extension"
 import rawData from "@/data/data.json"
+import { assignSequentialIds } from "@/lib/utils"
+
+const initialExtensions = assignSequentialIds(rawData as Extension[])
+
+function normalizeExtensions(data: Extension[]) {
+  return data.some((item) => item.id == null) ? assignSequentialIds(data) : data
+}
 
 interface ExtensionsContextType {
-  extensions: Extension[]
+  extensions: typeof initialExtensions
   filteredExtensions: Extension[]
   filter: ExtensionFilter
   setFilter: (filter: ExtensionFilter) => void
@@ -17,27 +24,41 @@ const ExtensionsContext = createContext<ExtensionsContextType | undefined>(
 
 const LOCAL_STORAGE_KEY = "browser_extensions_data"
 
+function loadExtensions(): Extension[] {
+  if (typeof window === "undefined") {
+    return initialExtensions
+  }
+
+  try {
+    const saved = window.localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (!saved) {
+      return initialExtensions
+    }
+
+    const parsed = JSON.parse(saved) as Extension[]
+    return assignSequentialIds(parsed)
+  } catch {
+    return initialExtensions
+  }
+}
+
 export function ExtensionsProvider({
   children,
 }: {
   children: React.ReactNode
 }) {
   const [filter, setFilter] = useState<ExtensionFilter>("all")
-  const [extensions, setExtensions] = useState<Extension[]>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch (error) {
-        console.error("Failed to parse cached extension data", error)
-      }
-    }
-    return rawData as Extension[]
-  })
+  const [extensions, setExtensions] = useState<typeof initialExtensions>(() =>
+    loadExtensions()
+  )
 
   // Persist state updates to localStorage
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(extensions))
+    try {
+      window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(extensions))
+    } catch {
+      // ignore storage write failures
+    }
   }, [extensions])
 
   // Toggle active status

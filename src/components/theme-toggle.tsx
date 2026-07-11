@@ -17,14 +17,14 @@ export function ThemeToggle() {
       {/* Sun Icon (visible in dark mode) */}
       <img
         src={`${basePath}/icon-sun.svg`}
-        alt="Sun Icon"
+        alt=""
         className="scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
       />
       {/* Moon Icon (visible in light mode) */}
 
       <img
         src={`${basePath}/icon-moon.svg`}
-        alt="Moon Icon"
+        alt=""
         className="absolute scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
       />
     </Button>
