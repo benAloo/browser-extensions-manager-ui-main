@@ -11,5 +11,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: "/browser-extensions-manager-ui-main",
+  base: "/browser-extensions-manager-ui-main/",
 })
