@@ -36,7 +36,7 @@ function loadExtensions(): Extension[] {
     }
 
     const parsed = JSON.parse(saved) as Extension[]
-    return assignSequentialIds(parsed)
+    return normalizeExtensions(parsed)
   } catch {
     return initialExtensions
   }
