@@ -1,4 +1,3 @@
-import { ThemeProvider } from "@/components/theme-provider"
 import { ExtensionsProvider, useExtensions } from "@/context/extensions-context"
 import { Navbar } from "@/components/navbar"
 import {
@@ -14,7 +13,7 @@ import {
   CardHeader,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Switch } from "./components/ui/switch"
+import { Switch } from "@/components/ui/switch"
 
 const basePath = import.meta.env.BASE_URL
 function MainDashboard() {
@@ -31,7 +30,7 @@ function MainDashboard() {
       <main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredExtensions.map((item) => (
           <Card
-            key={item.name}
+            key={item.id}
             className="rounded-2xl border border-Neutral-200 bg-white p-3 shadow-sm dark:border-Neutral-700 dark:bg-Neutral-800"
           >
             <div className="flex gap-4">
@@ -80,11 +79,9 @@ function MainDashboard() {
 
 export function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <ExtensionsProvider>
         <MainDashboard />
       </ExtensionsProvider>
-    </ThemeProvider>
   )
 }
 
